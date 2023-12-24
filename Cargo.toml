@@ -6,3 +6,21 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+smallvec = "1"
+micromath = "2"
+embedded-graphics = "0.7.1"
+trowel = { version = "1.0", git = "https://github.com/shanecelis/trowel", features = ["sdcard"] }
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
+rp-pico = { version = "0.7.0", git = "https://github.com/shanecelis/rp-hal-boards.git", features = ["rtic-monotonic"] }
+cortex-m = "0.7.3"
+cortex-m-rt = "0.7.0"
+
+# [profile.release]
+# codegen-units = 1
+# debug = false
+# debug-assertions = false
+# incremental = false
+# lto = 'fat'
+# opt-level = 3
+# overflow-checks = false
