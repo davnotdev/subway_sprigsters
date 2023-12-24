@@ -19,8 +19,8 @@ pub struct RenderPass<'triangles> {
     pub projection: Option<ProjectionData>,
 }
 
-const FRAMEBUFFER_WIDTH: usize = 50;
-const FRAMEBUFFER_HEIGHT: usize = 50;
+const FRAMEBUFFER_WIDTH: usize = 120;
+const FRAMEBUFFER_HEIGHT: usize = 96;
 
 pub struct Framebuffer {
     colors: [u16; FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT],

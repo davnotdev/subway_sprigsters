@@ -19,6 +19,7 @@ mod color;
 mod game;
 mod graphics;
 mod math;
+mod models;
 
 use color::Color;
 use game::Game;
@@ -49,7 +50,7 @@ impl App for GameApp {
     }
 
     fn update(&mut self, buttons: Buttons) -> AppResult {
-        // self.game.update(buttons);
+        self.game.update(buttons);
         Ok(())
     }
 
@@ -61,7 +62,7 @@ impl App for GameApp {
         //     self.game.init_text(display);
         // }
 
-        // self.game.render(&mut self.framebuffer);
+        self.game.render(&mut self.framebuffer);
         self.framebuffer.flush(display);
         Ok(())
     }
