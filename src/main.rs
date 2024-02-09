@@ -20,11 +20,13 @@ mod game;
 mod graphics;
 mod math;
 mod models;
+mod rand;
 
 use color::Color;
 use game::Game;
 use graphics::*;
 use math::*;
+use rand::*;
 
 const SCREEN_WIDTH: usize = 160;
 const SCREEN_HEIGHT: usize = 128;

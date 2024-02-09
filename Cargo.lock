@@ -778,6 +778,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "nanorand"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
+
+[[package]]
 name = "nb"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -889,6 +895,7 @@ dependencies = [
  "cortex-m-rt",
  "embedded-graphics",
  "micromath 2.1.0",
+ "nanorand",
  "rp-pico",
  "smallvec",
  "trowel",
