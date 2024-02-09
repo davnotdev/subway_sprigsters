@@ -16,7 +16,7 @@ impl Player {
     }
 }
 
-impl Game {
+impl SubwayLevel {
     pub fn update_player(&mut self, buttons: Buttons) {
         if buttons.contains(Buttons::A) || buttons.contains(Buttons::J) {
             if !self.last_frame_horizontal_input {
