@@ -1,5 +1,5 @@
 [package]
-name = "orphesurf"
+name = "subway_sprigsters"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,7 @@ edition = "2021"
 smallvec = "1"
 micromath = "2"
 embedded-graphics = "0.7.1"
-trowel = { version = "1.0", git = "https://github.com/shanecelis/trowel", features = ["sdcard"] }
+trowel = { version = "1.0", git = "https://github.com/davnotdev/trowel", features = ["sdcard"] }
 nanorand = { version = "0.7", default-features = false, features = ["wyrand"] }
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
