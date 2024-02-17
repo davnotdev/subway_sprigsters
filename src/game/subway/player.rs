@@ -1,9 +1,15 @@
 use super::*;
 
+pub enum PlayerMovement {
+    Running { last_frame_horizontal_input: bool },
+    Sliding { last_roll_time: Instant },
+}
+
 pub struct Player {
-    x_position: i8,
-    y_position: f32,
-    y_velocity: f32,
+    pub x_position: i8,
+    pub y_position: f32,
+    pub y_velocity: f32,
+    pub movement: PlayerMovement,
 }
 
 impl Player {
@@ -12,29 +18,53 @@ impl Player {
             x_position: 0,
             y_position: 0.0,
             y_velocity: 0.0,
+            movement: PlayerMovement::Running {
+                last_frame_horizontal_input: false,
+            },
         }
     }
 }
 
 impl SubwayLevel {
     pub fn update_player(&mut self, buttons: Buttons) {
-        if buttons.contains(Buttons::A) || buttons.contains(Buttons::J) {
-            if !self.last_frame_horizontal_input {
-                self.player.x_position = (self.player.x_position - 1).clamp(-1, 1);
-            }
-            self.last_frame_horizontal_input = true;
-        } else if buttons.contains(Buttons::D) || buttons.contains(Buttons::L) {
-            if !self.last_frame_horizontal_input {
-                self.player.x_position = (self.player.x_position + 1).clamp(-1, 1);
-            }
-            self.last_frame_horizontal_input = true;
-        } else {
-            self.last_frame_horizontal_input = false;
-        }
+        match &mut self.player.movement {
+            PlayerMovement::Running {
+                ref mut last_frame_horizontal_input,
+            } => {
+                if buttons.contains(Buttons::A) || buttons.contains(Buttons::J) {
+                    if !*last_frame_horizontal_input {
+                        self.player.x_position = (self.player.x_position - 1).clamp(-1, 1);
+                    }
+                    *last_frame_horizontal_input = true;
+                } else if buttons.contains(Buttons::D) || buttons.contains(Buttons::L) {
+                    if !*last_frame_horizontal_input {
+                        self.player.x_position = (self.player.x_position + 1).clamp(-1, 1);
+                    }
+                    *last_frame_horizontal_input = true;
+                } else {
+                    *last_frame_horizontal_input = false;
+                }
 
-        if self.can_jump && buttons.contains(Buttons::I) {
-            self.player.y_velocity = 2.0;
-            self.can_jump = false;
+                if self.can_jump && buttons.contains(Buttons::I) {
+                    self.player.y_velocity = 2.0;
+                    self.can_jump = false;
+                }
+
+                if buttons.contains(Buttons::K) {
+                    self.player.movement = PlayerMovement::Sliding {
+                        last_roll_time: Instant::now(),
+                    }
+                }
+            }
+            PlayerMovement::Sliding {
+                ref mut last_roll_time,
+            } => {
+                if last_roll_time.elapsed() > Duration::from_millis(450) {
+                    self.player.movement = PlayerMovement::Running {
+                        last_frame_horizontal_input: false,
+                    }
+                }
+            }
         }
 
         self.player.y_velocity -= 0.4;
@@ -44,11 +74,25 @@ impl SubwayLevel {
             self.player.y_position = 0.0;
             self.can_jump = true;
         }
+
+        if self.player_died.try_take() {
+            eprintln!("You die now");
+        }
     }
 
     pub fn render_player(&mut self, fb: &mut Framebuffer) {
+        if self.player_died.is_off() {
+            return;
+        }
+
+        let player_height_scalar = match self.player.movement {
+            PlayerMovement::Running { .. } => 1.0 + (self.ticks as f32).sin() * 0.15,
+            PlayerMovement::Sliding { .. } => 0.25,
+        };
+
         let model = mat4_identity();
-        let model = mat4_scale(model, [0.3, 0.6, 0.3]);
+        let model = mat4_scale(model, [0.3, 0.6 * player_height_scalar, 0.3]);
+        let model = mat4_rotate(model, 0.26, [1.0, 0.0, 0.0]);
         let model = mat4_translate(
             model,
             [
@@ -59,8 +103,8 @@ impl SubwayLevel {
         );
 
         fb.render_pass(&RenderPass {
-            camera_front: vec_normalize([0.0, 0.1, 1.0]),
-            camera_position: [0.0, -2.0, -8.0],
+            camera_front: consts::CAMERA_FRONT,
+            camera_position: consts::CAMERA_POSITION,
             triangles: models::cube(),
             model,
             color: Some(Color::Gray2),

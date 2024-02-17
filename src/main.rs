@@ -10,6 +10,7 @@ use embedded_graphics::{
     text::Text,
 };
 use smallvec::{smallvec, SmallVec};
+use std::time::{Duration, Instant};
 use trowel::{App, AppResult, Buttons};
 
 #[allow(unused_imports)]
