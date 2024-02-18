@@ -1,6 +1,7 @@
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_std)]
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_main)]
 
+use arrayvec::ArrayVec;
 use embedded_graphics::{
     draw_target::DrawTarget,
     image::{Image, ImageRawLE},
@@ -9,8 +10,6 @@ use embedded_graphics::{
     prelude::*,
     text::Text,
 };
-use smallvec::{smallvec, SmallVec};
-use std::time::{Duration, Instant};
 use trowel::{App, AppResult, Buttons};
 
 #[allow(unused_imports)]

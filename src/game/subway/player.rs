@@ -2,7 +2,7 @@ use super::*;
 
 pub enum PlayerMovement {
     Running { last_frame_horizontal_input: bool },
-    Sliding { last_roll_time: Instant },
+    Sliding { roll_start_tick: u64 },
 }
 
 pub struct Player {
@@ -52,14 +52,14 @@ impl SubwayLevel {
 
                 if buttons.contains(Buttons::K) {
                     self.player.movement = PlayerMovement::Sliding {
-                        last_roll_time: Instant::now(),
+                        roll_start_tick: self.ticks,
                     }
                 }
             }
             PlayerMovement::Sliding {
-                ref mut last_roll_time,
+                ref mut roll_start_tick,
             } => {
-                if last_roll_time.elapsed() > Duration::from_millis(450) {
+                if self.ticks - *roll_start_tick > 7 {
                     self.player.movement = PlayerMovement::Running {
                         last_frame_horizontal_input: false,
                     }
@@ -75,9 +75,7 @@ impl SubwayLevel {
             self.can_jump = true;
         }
 
-        if self.player_died.try_take() {
-            eprintln!("You die now");
-        }
+        if self.player_died.try_take() {}
     }
 
     pub fn render_player(&mut self, fb: &mut Framebuffer) {

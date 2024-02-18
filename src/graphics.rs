@@ -62,12 +62,14 @@ impl Framebuffer {
     }
 
     #[inline(always)]
-    fn interpolate(i0: f32, d0: f32, i1: f32, d1: f32) -> SmallVec<[f32; 256]> {
+    fn interpolate(i0: f32, d0: f32, i1: f32, d1: f32) -> ArrayVec<f32, 256> {
         if i0 == i1 {
-            return smallvec![d0];
+            let mut ret = ArrayVec::new();
+            ret.push(d0);
+            return ret;
         }
 
-        let mut values = smallvec![];
+        let mut values = ArrayVec::new();
         let a = (d1 - d0) / (i1 - i0);
         let mut d = d0;
         for _ in (i0 as usize)..(i1 as usize) {
@@ -149,7 +151,9 @@ impl Framebuffer {
         x12.pop();
         x02.pop();
         let mut x012 = x01.clone();
-        x012.append(&mut x12);
+        for i in x12 {
+            x012.push(i);
+        }
 
         let m = x02.len() / 2;
         if m != 0 && m < x02.len() && m < x012.len() {
@@ -234,7 +238,9 @@ impl Framebuffer {
                     ];
                     Self::clip_planes((view_vertex_a, view_vertex_b, view_vertex_c), &test_planes)
                 } else {
-                    smallvec![(view_vertex_a, view_vertex_b, view_vertex_c)]
+                    let mut ret = ArrayVec::new();
+                    ret.push((view_vertex_a, view_vertex_b, view_vertex_c));
+                    ret
                 };
 
                 clipped_triangles.iter().for_each(|triangle| {
@@ -307,13 +313,16 @@ impl Framebuffer {
     fn clip_planes(
         vertices: (Vec3, Vec3, Vec3),
         test_planes: &[(Vec3, Vec3)],
-    ) -> SmallVec<[(Vec3, Vec3, Vec3); 2]> {
-        let mut final_triangles: SmallVec<[(Vec3, Vec3, Vec3); 2]> = smallvec![vertices];
+    ) -> ArrayVec<(Vec3, Vec3, Vec3), 4> {
+        let mut final_triangles: ArrayVec<(Vec3, Vec3, Vec3), 4> = ArrayVec::new();
+        final_triangles.push(vertices);
 
         for plane in test_planes {
-            let mut passed: SmallVec<[(Vec3, Vec3, Vec3); 2]> = smallvec![];
+            let mut passed: ArrayVec<(Vec3, Vec3, Vec3), 4> = ArrayVec::new();
             for t in final_triangles {
-                passed.append(&mut triangle_clip_plane(plane.0, plane.1, t));
+                for i in triangle_clip_plane(plane.0, plane.1, t) {
+                    passed.push(i);
+                }
             }
             final_triangles = passed;
         }

@@ -232,12 +232,12 @@ pub fn triangle_clip_plane(
     plane_point: Vec3,
     plane_normal: Vec3,
     triangle: (Vec3, Vec3, Vec3),
-) -> SmallVec<[(Vec3, Vec3, Vec3); 2]> {
+) -> ArrayVec<(Vec3, Vec3, Vec3), 2> {
     let dist =
         |point: Vec3| -> f32 { vec_dot(plane_normal, point) - vec_dot(plane_normal, plane_point) };
 
-    let mut inside_points: SmallVec<[Vec3; 3]> = smallvec![];
-    let mut outside_points: SmallVec<[Vec3; 3]> = smallvec![];
+    let mut inside_points: ArrayVec<Vec3, 3> = ArrayVec::new();
+    let mut outside_points: ArrayVec<Vec3, 3> = ArrayVec::new();
 
     let d0 = dist(triangle.0);
     let d1 = dist(triangle.1);
@@ -260,25 +260,29 @@ pub fn triangle_clip_plane(
     }
 
     if inside_points.len() == 3 {
-        return smallvec![triangle];
+        let mut ret = ArrayVec::new();
+        ret.push(triangle);
+        return ret;
     }
 
     if inside_points.len() == 1 && outside_points.len() == 2 {
-        return smallvec![(
+        let mut ret = ArrayVec::new();
+        ret.push((
             inside_points[0],
             vec_intersects_plane(
                 plane_point,
                 plane_normal,
                 inside_points[0],
-                outside_points[0]
+                outside_points[0],
             ),
             vec_intersects_plane(
                 plane_point,
                 plane_normal,
                 inside_points[0],
-                outside_points[1]
-            )
-        )];
+                outside_points[1],
+            ),
+        ));
+        return ret;
     }
 
     if inside_points.len() == 2 && outside_points.len() == 1 {
@@ -288,7 +292,7 @@ pub fn triangle_clip_plane(
             inside_points[0],
             outside_points[0],
         );
-        return smallvec![
+        return ArrayVec::from([
             (inside_points[0], inside_points[1], ot),
             (
                 inside_points[1],
@@ -297,13 +301,13 @@ pub fn triangle_clip_plane(
                     plane_point,
                     plane_normal,
                     inside_points[1],
-                    outside_points[0]
-                )
-            )
-        ];
+                    outside_points[0],
+                ),
+            ),
+        ]);
     }
 
-    smallvec![]
+    ArrayVec::new()
 }
 
 fn fast_inv_sqrt(number: f32) -> f32 {

@@ -18,7 +18,7 @@ where
 pub fn rand_range<T, B>(bounds: B) -> T
 where
     T: RandomRange<WyRand, 8>,
-    B: std::ops::RangeBounds<T>,
+    B: core::ops::RangeBounds<T>,
 {
     let rand = unsafe { &mut *RAND.get() };
     if rand.is_none() {

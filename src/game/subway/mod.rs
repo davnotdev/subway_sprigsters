@@ -1,8 +1,8 @@
 use super::*;
 
 mod consts;
-mod obsticle;
 mod ground;
+mod obsticle;
 mod player;
 mod spawner;
 
@@ -42,7 +42,7 @@ pub struct SubwayLevel {
     pub ticks: u64,
     pub can_jump: bool,
     pub player: Player,
-    pub obsticles: SmallVec<[Obsticle; consts::MAX_OBSTICLES]>,
+    pub obsticles: [ArrayVec<Obsticle, { consts::MAX_OBSTICLES }>; 3],
 
     pub player_died: OnceSignal,
 }
@@ -53,7 +53,7 @@ impl SubwayLevel {
             ticks: 0,
             can_jump: true,
             player: Player::new(),
-            obsticles: smallvec![],
+            obsticles: [ArrayVec::new(), ArrayVec::new(), ArrayVec::new()],
 
             player_died: Default::default(),
         }
@@ -64,7 +64,6 @@ impl SubwayLevel {
         self.update_player(buttons);
         self.update_obsticles();
         self.update_spawner();
-        self.update_collisions();
     }
 
     pub fn render(&mut self, fb: &mut Framebuffer) {
