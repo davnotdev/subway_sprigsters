@@ -2,48 +2,20 @@ use super::*;
 
 mod consts;
 mod ground;
-mod obsticle;
+mod obstacle;
 mod player;
 mod spawner;
 
-use obsticle::*;
+use obstacle::*;
 use player::*;
-
-#[derive(Default, PartialEq, Eq)]
-pub enum OnceSignal {
-    #[default]
-    Down,
-    Up,
-    Off,
-}
-
-impl OnceSignal {
-    pub fn signal(&mut self) {
-        if *self != OnceSignal::Off {
-            *self = OnceSignal::Up
-        }
-    }
-
-    pub fn try_take(&mut self) -> bool {
-        if *self == OnceSignal::Up {
-            *self = OnceSignal::Off;
-            true
-        } else {
-            false
-        }
-    }
-
-    pub fn is_off(&self) -> bool {
-        *self == OnceSignal::Off
-    }
-}
 
 pub struct SubwayLevel {
     pub ticks: u64,
     pub can_jump: bool,
     pub player: Player,
-    pub obsticles: [ArrayVec<Obsticle, { consts::MAX_OBSTICLES }>; 3],
+    pub obstacles: [ArrayVec<Obstacle, { consts::MAX_OBSTACLES }>; 3],
 
+    pub initial_ui: bool,
     pub player_died: OnceSignal,
 }
 
@@ -53,17 +25,21 @@ impl SubwayLevel {
             ticks: 0,
             can_jump: true,
             player: Player::new(),
-            obsticles: [ArrayVec::new(), ArrayVec::new(), ArrayVec::new()],
+            obstacles: [ArrayVec::new(), ArrayVec::new(), ArrayVec::new()],
 
+            initial_ui: true,
             player_died: Default::default(),
         }
     }
 
-    pub fn update(&mut self, buttons: Buttons) {
+    pub fn update(&mut self, buttons: Buttons) -> Option<Game> {
         self.ticks += 1;
+
         self.update_player(buttons);
-        self.update_obsticles();
+        self.update_obstacles();
         self.update_spawner();
+
+        None
     }
 
     pub fn render(&mut self, fb: &mut Framebuffer) {
@@ -71,7 +47,19 @@ impl SubwayLevel {
         fb.clear_depth(core::f32::MAX);
 
         self.render_ground(fb);
-        self.render_obsticles(fb);
+        self.render_obstacles(fb);
         self.render_player(fb);
+    }
+
+    pub fn render_ui<T, E>(&mut self, display: &mut T)
+    where
+        T: DrawTarget<Color = Rgb565, Error = E>,
+    {
+        if self.initial_ui {
+            let Ok(_) = display.clear(Rgb565::BLACK) else {
+                panic!("Failed to draw");
+            };
+            self.initial_ui = false;
+        }
     }
 }

@@ -1,7 +1,7 @@
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_std)]
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_main)]
 
-use arrayvec::ArrayVec;
+use arrayvec::{ArrayString, ArrayVec};
 use embedded_graphics::{
     draw_target::DrawTarget,
     image::{Image, ImageRawLE},
@@ -10,6 +10,7 @@ use embedded_graphics::{
     prelude::*,
     text::Text,
 };
+use numtoa::NumToA;
 use trowel::{App, AppResult, Buttons};
 
 #[allow(unused_imports)]
@@ -21,12 +22,14 @@ mod graphics;
 mod math;
 mod models;
 mod rand;
+mod signal;
 
 use color::Color;
 use game::Game;
 use graphics::*;
 use math::*;
 use rand::*;
+use signal::*;
 
 const SCREEN_WIDTH: usize = 160;
 const SCREEN_HEIGHT: usize = 128;
@@ -66,6 +69,7 @@ impl App for GameApp {
 
         self.game.render(&mut self.framebuffer);
         self.framebuffer.flush(display);
+        self.game.render_ui(display);
         Ok(())
     }
 }
