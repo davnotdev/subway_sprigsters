@@ -3,6 +3,7 @@ use super::*;
 pub enum PlayerMovement {
     Running { last_frame_horizontal_input: bool },
     Sliding { roll_start_tick: u64 },
+    Climbing,
 }
 
 pub struct Player {
@@ -10,6 +11,8 @@ pub struct Player {
     pub y_position: f32,
     pub y_velocity: f32,
     pub movement: PlayerMovement,
+    pub is_on_ground: bool,
+    pub is_above_block: bool,
 }
 
 impl Player {
@@ -21,6 +24,8 @@ impl Player {
             movement: PlayerMovement::Running {
                 last_frame_horizontal_input: false,
             },
+            is_on_ground: true,
+            is_above_block: false,
         }
     }
 }
@@ -59,7 +64,15 @@ impl SubwayLevel {
             PlayerMovement::Sliding {
                 ref mut roll_start_tick,
             } => {
-                if self.ticks - *roll_start_tick > 7 {
+                if self.ticks - *roll_start_tick > 9 {
+                    self.player.movement = PlayerMovement::Running {
+                        last_frame_horizontal_input: false,
+                    }
+                }
+            }
+            PlayerMovement::Climbing => {
+                self.player.y_position += 0.2;
+                if self.player.y_position >= OBSTACLE_CEIL_Y {
                     self.player.movement = PlayerMovement::Running {
                         last_frame_horizontal_input: false,
                     }
@@ -67,11 +80,20 @@ impl SubwayLevel {
             }
         }
 
-        self.player.y_velocity -= 0.4;
-        self.player.y_position = (self.player.y_position + self.player.y_velocity).clamp(0.0, 5.0);
+        let is_player_climbing = matches!(self.player.movement, PlayerMovement::Climbing);
+        if !is_player_climbing {
+            self.player.y_velocity -= 0.4;
+            self.player.y_position =
+                (self.player.y_position + self.player.y_velocity).clamp(0.0, 999.0);
+        }
 
-        if self.player.y_position <= 0.2 {
-            self.player.y_position = 0.0;
+        if self.player.is_on_ground {
+            if self.player.y_position <= 0.1 {
+                self.player.y_position = 0.0;
+                self.can_jump = true;
+            }
+        } else if !is_player_climbing && self.player.y_position - OBSTACLE_CEIL_Y <= 0.1 && self.player.is_above_block {
+            self.player.y_position = OBSTACLE_CEIL_Y + 0.05;
             self.can_jump = true;
         }
 
@@ -86,6 +108,7 @@ impl SubwayLevel {
         let player_height_scalar = match self.player.movement {
             PlayerMovement::Running { .. } => 1.0 + (self.ticks as f32).sin() * 0.15,
             PlayerMovement::Sliding { .. } => 0.25,
+            PlayerMovement::Climbing => 1.0,
         };
 
         let model = mat4_identity();
@@ -102,7 +125,7 @@ impl SubwayLevel {
 
         fb.render_pass(&RenderPass {
             camera_front: consts::CAMERA_FRONT,
-            camera_position: consts::CAMERA_POSITION,
+            camera_position: self.get_camera_position(),
             triangles: models::cube(),
             model,
             color: Some(Color::Gray2),

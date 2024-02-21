@@ -42,16 +42,7 @@ impl SubwayLevel {
         None
     }
 
-    pub fn render(&mut self, fb: &mut Framebuffer) {
-        fb.clear_color(Color::GrayL);
-        fb.clear_depth(core::f32::MAX);
-
-        self.render_ground(fb);
-        self.render_obstacles(fb);
-        self.render_player(fb);
-    }
-
-    pub fn render_ui<T, E>(&mut self, display: &mut T)
+    pub fn render<T, E>(&mut self, fb: &mut Framebuffer, display: &mut T)
     where
         T: DrawTarget<Color = Rgb565, Error = E>,
     {
@@ -61,5 +52,18 @@ impl SubwayLevel {
             };
             self.initial_ui = false;
         }
+
+        fb.clear_color(Color::GrayL);
+        fb.clear_depth(core::f32::MAX);
+
+        self.render_ground(fb);
+        self.render_obstacles(fb);
+        self.render_player(fb);
+
+        fb.flush(display);
+    }
+
+    pub fn get_camera_position(&self) -> Vec3 {
+        vec_sub_vec(consts::CAMERA_POSITION, [0.0, self.player.y_position, 0.0])
     }
 }

@@ -28,20 +28,13 @@ impl Game {
         }
     }
 
-    pub fn render(&mut self, fb: &mut Framebuffer) {
-        match self {
-            Game::Subway(level) => level.render(fb),
-            Game::SeedScreen(level) => level.render(fb),
-        }
-    }
-
-    pub fn render_ui<T, E>(&mut self, display: &mut T)
+    pub fn render<T, E>(&mut self, fb: &mut Framebuffer, display: &mut T)
     where
         T: DrawTarget<Color = Rgb565, Error = E>,
     {
         match self {
-            Game::Subway(level) => level.render_ui(display),
-            Game::SeedScreen(level) => level.render_ui(display),
+            Game::Subway(level) => level.render(fb, display),
+            Game::SeedScreen(level) => level.render(fb, display),
         }
     }
 }

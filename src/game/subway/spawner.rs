@@ -12,7 +12,7 @@ const MIN_TRAIN_LENGTH: usize = 6;
 
 impl SubwayLevel {
     pub fn update_spawner(&mut self) {
-        if self.ticks % 32 == 0 {
+        if self.ticks % 25 == 0 {
             self.spawn();
         }
     }

@@ -67,9 +67,7 @@ impl App for GameApp {
         //     self.game.init_text(display);
         // }
 
-        self.game.render(&mut self.framebuffer);
-        self.framebuffer.flush(display);
-        self.game.render_ui(display);
+        self.game.render(&mut self.framebuffer, display);
         Ok(())
     }
 }

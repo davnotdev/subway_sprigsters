@@ -25,9 +25,7 @@ impl SeedScreen {
         }
     }
 
-    pub fn render(&mut self, _: &mut Framebuffer) {}
-
-    pub fn render_ui<T, E>(&mut self, display: &mut T)
+    pub fn render<T, E>(&mut self, _: &mut Framebuffer, display: &mut T)
     where
         T: DrawTarget<Color = Rgb565, Error = E>,
     {

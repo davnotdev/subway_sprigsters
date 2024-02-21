@@ -9,7 +9,7 @@ impl SubwayLevel {
 
         fb.render_pass(&RenderPass {
             camera_front: consts::CAMERA_FRONT,
-            camera_position: consts::CAMERA_POSITION,
+            camera_position: self.get_camera_position(),
             triangles: models::quad(),
             model,
             color: Some(Color::Gray0),
