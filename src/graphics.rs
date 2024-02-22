@@ -313,12 +313,12 @@ impl Framebuffer {
     fn clip_planes(
         vertices: (Vec3, Vec3, Vec3),
         test_planes: &[(Vec3, Vec3)],
-    ) -> ArrayVec<(Vec3, Vec3, Vec3), 4> {
-        let mut final_triangles: ArrayVec<(Vec3, Vec3, Vec3), 4> = ArrayVec::new();
+    ) -> ArrayVec<(Vec3, Vec3, Vec3), 32> {
+        let mut final_triangles: ArrayVec<(Vec3, Vec3, Vec3), 32> = ArrayVec::new();
         final_triangles.push(vertices);
 
         for plane in test_planes {
-            let mut passed: ArrayVec<(Vec3, Vec3, Vec3), 4> = ArrayVec::new();
+            let mut passed: ArrayVec<(Vec3, Vec3, Vec3), 32> = ArrayVec::new();
             for t in final_triangles {
                 for i in triangle_clip_plane(plane.0, plane.1, t) {
                     passed.push(i);

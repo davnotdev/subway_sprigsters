@@ -1,5 +1,8 @@
 use super::*;
 
+const JUMP_SPEED: f32 = 1.7;
+
+#[derive(Debug)]
 pub enum PlayerMovement {
     Running { last_frame_horizontal_input: bool },
     Sliding { roll_start_tick: u64 },
@@ -11,7 +14,6 @@ pub struct Player {
     pub y_position: f32,
     pub y_velocity: f32,
     pub movement: PlayerMovement,
-    pub is_on_ground: bool,
     pub is_above_block: bool,
 }
 
@@ -24,7 +26,6 @@ impl Player {
             movement: PlayerMovement::Running {
                 last_frame_horizontal_input: false,
             },
-            is_on_ground: true,
             is_above_block: false,
         }
     }
@@ -51,7 +52,7 @@ impl SubwayLevel {
                 }
 
                 if self.can_jump && buttons.contains(Buttons::I) {
-                    self.player.y_velocity = 2.0;
+                    self.player.y_velocity = JUMP_SPEED;
                     self.can_jump = false;
                 }
 
@@ -71,30 +72,33 @@ impl SubwayLevel {
                 }
             }
             PlayerMovement::Climbing => {
-                self.player.y_position += 0.2;
-                if self.player.y_position >= OBSTACLE_CEIL_Y {
+                self.player.y_position += 0.4;
+                if self.player.y_position > OBSTACLE_CEIL_Y + 0.5 {
                     self.player.movement = PlayerMovement::Running {
                         last_frame_horizontal_input: false,
-                    }
+                    };
                 }
             }
         }
 
         let is_player_climbing = matches!(self.player.movement, PlayerMovement::Climbing);
         if !is_player_climbing {
-            self.player.y_velocity -= 0.4;
-            self.player.y_position =
-                (self.player.y_position + self.player.y_velocity).clamp(0.0, 999.0);
-        }
+            let ground_point =
+                if self.player.is_above_block && self.player.y_velocity < JUMP_SPEED - 1.3 {
+                    OBSTACLE_CEIL_Y + 0.1
+                } else {
+                    0.0
+                };
 
-        if self.player.is_on_ground {
-            if self.player.y_position <= 0.1 {
-                self.player.y_position = 0.0;
+            self.player.y_velocity -= 0.35;
+            self.player.y_position =
+                (self.player.y_position + self.player.y_velocity).clamp(0.0, 99.0);
+
+            if self.player.y_position < ground_point + 0.1 {
+                self.player.y_position = ground_point;
+                self.player.y_velocity = 0.0;
                 self.can_jump = true;
             }
-        } else if !is_player_climbing && self.player.y_position - OBSTACLE_CEIL_Y <= 0.1 && self.player.is_above_block {
-            self.player.y_position = OBSTACLE_CEIL_Y + 0.05;
-            self.can_jump = true;
         }
 
         if self.player_died.try_take() {}
@@ -112,12 +116,12 @@ impl SubwayLevel {
         };
 
         let model = mat4_identity();
-        let model = mat4_scale(model, [0.3, 0.6 * player_height_scalar, 0.3]);
         let model = mat4_rotate(model, 0.26, [1.0, 0.0, 0.0]);
+        let model = mat4_scale(model, [0.4, 0.75 * player_height_scalar, 0.4]);
         let model = mat4_translate(
             model,
             [
-                2.0 * self.player.x_position as f32,
+                4.0 * self.player.x_position as f32,
                 -self.player.y_position,
                 0.0,
             ],
