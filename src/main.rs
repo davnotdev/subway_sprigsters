@@ -1,5 +1,6 @@
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_std)]
 #![cfg_attr(all(target_arch = "arm", target_os = "none"), no_main)]
+#![feature(type_alias_impl_trait)]
 
 use arrayvec::{ArrayString, ArrayVec};
 use embedded_graphics::{
@@ -22,6 +23,8 @@ mod graphics;
 mod math;
 mod models;
 mod rand;
+#[cfg(all(target_arch = "arm", target_os = "none"))]
+mod rp2040;
 mod signal;
 
 use color::Color;
@@ -72,7 +75,16 @@ impl App for GameApp {
     }
 }
 
-#[trowel::entry]
-fn main() {
+#[cfg(not(all(target_arch = "arm", target_os = "none")))]
+async fn run() {
     trowel::run(GameApp::new());
+}
+
+#[cfg(not(all(target_arch = "arm", target_os = "none")))]
+fn main() {
+    use tokio::runtime::Builder;
+    let rt = Builder::new_current_thread().build().unwrap();
+    rt.block_on(async {
+        run().await;
+    });
 }
