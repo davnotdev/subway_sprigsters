@@ -25,8 +25,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          components: rustfmt
+          toolchain: nightly
           targets: wasm32-unknown-unknown
       - name: Install Trunk
         shell: bash
