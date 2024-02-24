@@ -32,7 +32,7 @@ jobs:
         run: cargo install trunk
       - name: Compile
         shell: bash
-        run: trunk build
+        run: trunk build --public-url ${{ github.event.repository.name }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

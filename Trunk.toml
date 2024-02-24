@@ -1,0 +1,3 @@
+[[proxy]]
+rewrite = "/subway_sprigsters"
+backend = "https://davnotdev.github.io"
