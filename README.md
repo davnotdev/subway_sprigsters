@@ -42,6 +42,46 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
     a =              k = Roll
 ```
 
-## 
+## Playing
 
+### On the Web
+
+[https://davnotdev.github.io/subway_sprigsters](https://davnotdev.github.io/subway_sprigsters)
+
+### From UF2
+
+Coming Soon!
+
+### From Local Build
+
+1. Install Rust from [https://rustup.rs](https://rustup.rs)
+
+2. Install Dependencies
+
+``` sh
+rustup target add thumbv6m-none-eabi
+cargo install cargo-binutils
+rustup component add llvm-tools-preview
+cargo install elf2uf2-rs
+cargo install probe-run
+cargo install flip-link
+cargo install wasm-server-runner
+```
+
+3. Compile into UF2
+
+> You MUST build with release.
+> Otherwise, the game will take many minutes to boot.
+
+```sh
+cargo build-uf2 --release --target thumbv6m-none-eabi
+```
+
+4. Install onto Sprig
+
+From here, hold the bootsel button on your sprig while plugging it into your computer.
+Then release.
+Now, copy the UF2 file from `target/thumbv6m-none-eabi/release/` into the newly mounted drive.
+Voilà.
+Have fun!
 
