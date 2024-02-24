@@ -6,6 +6,7 @@ use arrayvec::{ArrayString, ArrayVec};
 use embedded_graphics::{
     draw_target::DrawTarget,
     image::{Image, ImageRawLE},
+    primitives::Rectangle,
     mono_font::{ascii, MonoTextStyle},
     pixelcolor::{Rgb565, Rgb888},
     prelude::*,
@@ -23,8 +24,6 @@ mod graphics;
 mod math;
 mod models;
 mod rand;
-#[cfg(all(target_arch = "arm", target_os = "none"))]
-mod rp2040;
 mod signal;
 
 use color::Color;
@@ -53,7 +52,6 @@ impl GameApp {
 
 impl App for GameApp {
     fn init(&mut self) -> AppResult {
-        // self.game.init();
         Ok(())
     }
 
@@ -66,25 +64,12 @@ impl App for GameApp {
     where
         T: DrawTarget<Color = Rgb565, Error = E>,
     {
-        // if self.game.ticks <= 2 {
-        //     self.game.init_text(display);
-        // }
-
         self.game.render(&mut self.framebuffer, display);
         Ok(())
     }
 }
 
-#[cfg(not(all(target_arch = "arm", target_os = "none")))]
-async fn run() {
-    trowel::run(GameApp::new());
-}
-
-#[cfg(not(all(target_arch = "arm", target_os = "none")))]
+#[trowel::entry]
 fn main() {
-    use tokio::runtime::Builder;
-    let rt = Builder::new_current_thread().build().unwrap();
-    rt.block_on(async {
-        run().await;
-    });
+    trowel::run(GameApp::new());
 }

@@ -5,9 +5,11 @@ mod ground;
 mod obstacle;
 mod player;
 mod spawner;
+mod ui;
 
 use obstacle::*;
 use player::*;
+use ui::*;
 
 pub struct SubwayLevel {
     pub ticks: u64,
@@ -17,6 +19,8 @@ pub struct SubwayLevel {
 
     pub initial_ui: bool,
     pub player_died: OnceSignal,
+
+    pub game_speed_scalar: f32,
 }
 
 impl SubwayLevel {
@@ -29,13 +33,20 @@ impl SubwayLevel {
 
             initial_ui: true,
             player_died: Default::default(),
+            game_speed_scalar: consts::STARTER_GAME_SPEED_SCALAR,
         }
     }
 
     pub fn update(&mut self, buttons: Buttons) -> Option<Game> {
         self.ticks += 1;
 
-        self.update_player(buttons);
+        if self.ticks % 20 == 0 && !self.player_died.is_off() {
+            self.game_speed_scalar += 0.0007;
+        }
+
+        if !self.player_died.is_off() {
+            self.update_player(buttons);
+        }
         self.update_obstacles();
         self.update_spawner();
 
@@ -46,21 +57,20 @@ impl SubwayLevel {
     where
         T: DrawTarget<Color = Rgb565, Error = E>,
     {
-        if self.initial_ui {
-            let Ok(_) = display.clear(Rgb565::BLACK) else {
-                panic!("Failed to draw");
-            };
-            self.initial_ui = false;
+        if self.ticks % 2 == 0 {
+            self.render_ui(display);
+
+            fb.clear_color(Color::Gray1);
+            fb.clear_depth(core::f32::MAX);
+
+            self.render_ground(fb);
+            self.render_obstacles(fb);
+            if !self.player_died.is_off() {
+                self.render_player(fb);
+            }
+
+            fb.flush(display);
         }
-
-        fb.clear_color(Color::GrayL);
-        fb.clear_depth(core::f32::MAX);
-
-        self.render_ground(fb);
-        self.render_obstacles(fb);
-        self.render_player(fb);
-
-        fb.flush(display);
     }
 
     pub fn get_camera_position(&self) -> Vec3 {

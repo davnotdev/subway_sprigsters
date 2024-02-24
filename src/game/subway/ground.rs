@@ -12,8 +12,8 @@ impl SubwayLevel {
             camera_position: self.get_camera_position(),
             triangles: models::quad(),
             model,
-            color: Some(Color::Gray0),
-            border_color: Some(Color::Gray0),
+            color: Some(Color::GrayL),
+            border_color: Some(Color::GrayL),
             enable_depth: false,
             projection: Some(ProjectionData {
                 fov_rad: FOV_RAD,

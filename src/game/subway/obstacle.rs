@@ -60,7 +60,7 @@ impl SubwayLevel {
     pub fn update_obstacles(&mut self) {
         for obstacles in self.obstacles.iter_mut() {
             for obstacle in obstacles.iter_mut() {
-                obstacle.z_position -= OBSTACLE_BASE_STATIC_SPEED
+                obstacle.z_position -= OBSTACLE_BASE_STATIC_SPEED * self.game_speed_scalar
             }
 
             obstacles.retain(|obstacle| obstacle.z_position >= OBSTACLE_DESPAWN_Z);
@@ -146,7 +146,7 @@ impl SubwayLevel {
                             models::cube(),
                             [1.6, OBSTACLE_BLOCK_HEIGHT, obstacle_length],
                             0.0,
-                            Color::Blue7,
+                            Color::GreenD,
                         );
                         self.render_each(
                             fb,
@@ -155,7 +155,7 @@ impl SubwayLevel {
                             models::ramp(),
                             [1.6, OBSTACLE_BLOCK_HEIGHT, 2.0],
                             0.0,
-                            Color::Blue7,
+                            Color::GreenD,
                         );
                     }
                     ObstacleType::Over => self.render_each(
@@ -200,7 +200,7 @@ impl SubwayLevel {
             triangles,
             model,
             color: Some(color),
-            border_color: Some(Color::Gray1),
+            border_color: Some(Color::Gray2),
             enable_depth: true,
             projection: Some(ProjectionData {
                 fov_rad: FOV_RAD,

@@ -13,23 +13,13 @@ nanorand = { version = "0.7", default-features = false, features = ["wyrand"] }
 arrayvec = { version = "0.7.4", default-features = false }
 numtoa = "0.2.4"
 
-[target.'cfg(not(all(target_arch = "arm", target_os = "none")))'.dependencies]
-tokio = { version = "1.0", features = ["rt"] } 
-
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
 rp-pico = { version = "0.7.0", git = "https://github.com/shanecelis/rp-hal-boards.git", features = ["rtic-monotonic"] }
-cortex-m = { version = "0.7.7", features = ["inline-asm", "critical-section"] }
+rp2040-hal = { version = "0.8.0", features=["rt", "critical-section-impl"] }
+rp2040-boot2 = "0.3"
+cortex-m = { version = "0.7.0", features = ["inline-asm", "critical-section"] }
 cortex-m-rt = "0.7.3"
-
-embassy-sync = { git = "https://github.com/embassy-rs/embassy" }
-embassy-executor = { git = "https://github.com/embassy-rs/embassy", features = ["arch-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }
-embassy-rp = { git = "https://github.com/embassy-rs/embassy" }
-embassy-time = { git = "https://github.com/embassy-rs/embassy" }
-
-fixed = "1.23.1"
-fixed-macro = "1.2"
-static_cell = "2"
-portable-atomic = { version = "1.5", features = ["critical-section"] }
+embedded-hal = { version = "0.2.5", features=["unproven"] }
 
 [profile.release]
 codegen-units = 1

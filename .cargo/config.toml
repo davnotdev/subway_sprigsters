@@ -7,17 +7,17 @@ runner = "elf2uf2-rs -d" # Download directly to sprig if in BOOTSEL mode.
 # runner = "probe-run --chip RP2040" # Run through a pico probe. (This is the way.)
 
 rustflags = [
-  # "-C", "linker=flip-link",
-  # "-C", "link-arg=--nmagic",
-  # "-C", "link-arg=-Tlink.x",
-  # "-C", "link-arg=-Tdefmt.x",
+  "-C", "linker=flip-link",
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
 
   # Code-size optimizations.
   #   trap unreachable can save a lot of space, but requires nightly compiler.
   #   uncomment the next line if you wish to enable it
-  # "-Z", "trap-unreachable=no",
-  # "-C", "inline-threshold=5",
-  # "-C", "no-vectorize-loops",
+  "-Z", "trap-unreachable=no",
+  "-C", "inline-threshold=5",
+  "-C", "no-vectorize-loops",
   # "-v",
 ]
 
@@ -25,8 +25,6 @@ rustflags = [
 # [target.'cfg(target_family = "wasm")']
 # runner = "wasm-bindgen --out-dir html/wasm --target web"
 
-
-# Uncomment these two lines to build for sprig by default.
 # [build]
 # target = "thumbv6m-none-eabi"
 

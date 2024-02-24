@@ -1,6 +1,6 @@
 use super::*;
 
-const JUMP_SPEED: f32 = 1.7;
+const JUMP_SPEED: f32 = 2.0;
 
 #[derive(Debug)]
 pub enum PlayerMovement {
@@ -105,10 +105,6 @@ impl SubwayLevel {
     }
 
     pub fn render_player(&mut self, fb: &mut Framebuffer) {
-        if self.player_died.is_off() {
-            return;
-        }
-
         let player_height_scalar = match self.player.movement {
             PlayerMovement::Running { .. } => 1.0 + (self.ticks as f32).sin() * 0.15,
             PlayerMovement::Sliding { .. } => 0.25,
@@ -133,7 +129,7 @@ impl SubwayLevel {
             triangles: models::cube(),
             model,
             color: Some(Color::Gray2),
-            border_color: Some(Color::Gray1),
+            border_color: Some(Color::Gray0),
             enable_depth: true,
             projection: Some(ProjectionData {
                 fov_rad: FOV_RAD,
