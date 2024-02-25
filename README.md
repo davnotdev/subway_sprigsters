@@ -65,7 +65,6 @@ rustup component add llvm-tools-preview
 cargo install elf2uf2-rs
 cargo install probe-run
 cargo install flip-link
-cargo install wasm-server-runner
 ```
 
 3. Compile into UF2

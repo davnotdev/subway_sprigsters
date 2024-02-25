@@ -1,0 +1,33 @@
+name: Build UF2
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build UF2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: llvm-tools-preview
+          targets: thumbv6m-none-eabi
+      - name: Setup dependencies
+        shell: bash
+        run: |
+          sudo apt install libudev-dev
+          cargo install cargo-binutils
+          cargo install elf2uf2-rs
+          cargo install flip-link
+      - name: Compile
+        shell: bash
+        run: cargo build-uf2 --release --target thumbv6m-none-eabi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: subway_sprigsters.uf2
+          path: ./target/thumbv6m-none-eabi/release/subway_sprigsters.uf2
