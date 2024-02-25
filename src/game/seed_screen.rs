@@ -19,7 +19,7 @@ impl SeedScreen {
 
         if buttons.contains(Buttons::K) {
             unsafe { rand::set_seed(self.seed) };
-            Some(Game::Subway(SubwayLevel::new()))
+            Some(Game::StartScreen(StartScreen::new()))
         } else {
             self.seed = self
                 .seed

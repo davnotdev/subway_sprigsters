@@ -37,9 +37,16 @@ impl SubwayLevel {
         let spawn_count = if spawn_twice { 2 } else { 1 } + if spawn_one_more { 1 } else { 0 };
 
         let mut lanes = [[None; MAX_TRAIN_LENGTH]; 3];
-        let z_offset = OBSTACLE_JUMP_SLIDE_SAFETY_PADDING;
 
         for lane_i in 0..spawn_count {
+            let z_offset = self.obstacles[lane_i]
+                .last()
+                .map(|o| match o.ty {
+                    ObstacleType::Train { count } => count as f32,
+                    ObstacleType::RampTrain { count } => count as f32,
+                    _ => OBSTACLE_JUMP_SLIDE_SAFETY_PADDING,
+                })
+                .unwrap_or(0.0);
             let ty = tys[lane_i];
 
             let obstacle = Obstacle {

@@ -2,15 +2,18 @@ use super::*;
 
 mod consts;
 mod seed_screen;
+mod start_screen;
 mod subway;
 
 use consts::*;
 use seed_screen::*;
+use start_screen::*;
 use subway::*;
 
 pub enum Game {
     Subway(SubwayLevel),
     SeedScreen(SeedScreen),
+    StartScreen(StartScreen),
 }
 
 impl Game {
@@ -21,6 +24,7 @@ impl Game {
     pub fn update(&mut self, buttons: Buttons) {
         let next = match self {
             Game::Subway(level) => level.update(buttons),
+            Game::StartScreen(level) => level.update(buttons),
             Game::SeedScreen(level) => level.update(buttons),
         };
         if let Some(next) = next {
@@ -34,6 +38,7 @@ impl Game {
     {
         match self {
             Game::Subway(level) => level.render(fb, display),
+            Game::StartScreen(level) => level.render(fb, display),
             Game::SeedScreen(level) => level.render(fb, display),
         }
     }

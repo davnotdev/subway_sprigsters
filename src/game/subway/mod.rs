@@ -1,15 +1,14 @@
 use super::*;
 
-mod consts;
+pub mod consts;
 mod ground;
 mod obstacle;
 mod player;
 mod spawner;
 mod ui;
 
-use obstacle::*;
-use player::*;
-use ui::*;
+pub use obstacle::*;
+pub use player::*;
 
 pub struct SubwayLevel {
     pub ticks: u64,
@@ -39,6 +38,31 @@ impl SubwayLevel {
 
     pub fn update(&mut self, buttons: Buttons) -> Option<Game> {
         self.ticks += 1;
+        #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+        {
+            fn expensive_computation(i: u32) {
+                let mut fb = Framebuffer::new();
+                let model = mat4_identity();
+                let model = mat4_translate(model, [0.0, 0.0, 0.0]);
+                core::hint::black_box(fb.render_pass(&RenderPass {
+                    camera_front: [2.0, 0.0, 0.0],
+                    camera_position: [i as f32 * 0.01, 0.0, 0.0],
+                    triangles: models::cube(),
+                    model,
+                    color: Some(Color::Gray0),
+                    border_color: Some(Color::Gray0),
+                    enable_depth: true,
+                    projection: Some(ProjectionData {
+                        fov_rad: FOV_RAD,
+                        near: NEAR,
+                        far: FAR,
+                    }),
+                }));
+            }
+            for i in 0..200 {
+                core::hint::black_box(expensive_computation(i));
+            }
+        }
 
         if self.ticks % 20 == 0 && !self.player_died.is_off() {
             self.game_speed_scalar += 0.0007;
@@ -46,6 +70,8 @@ impl SubwayLevel {
 
         if !self.player_died.is_off() {
             self.update_player(buttons);
+        } else if buttons.contains(Buttons::K) {
+            return Some(Game::StartScreen(StartScreen::new()));
         }
         self.update_obstacles();
         self.update_spawner();

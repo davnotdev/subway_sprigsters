@@ -13,28 +13,35 @@ impl SubwayLevel {
         }
 
         if self.ticks % 30 == 0 {
-            let Ok(_) = display.fill_solid(&Rectangle {
-                top_left: Point { x: 10, y: 10 },
-                size: Size {
-                    width: 120,
-                    height: 25,
+            let Ok(_) = display.fill_solid(
+                &Rectangle {
+                    top_left: Point { x: 10, y: 10 },
+                    size: Size {
+                        width: 120,
+                        height: 25,
+                    },
                 },
-            }, Rgb565::BLACK) else {
+                Rgb565::BLACK,
+            ) else {
                 panic!("Failed to draw");
             };
 
             let style = MonoTextStyle::new(&ascii::FONT_8X13, Rgb565::WHITE);
 
             let mut buf = [0u8; 50];
-            let mut s = ArrayString::<50>::from("Speed: ").unwrap();
-            let speed = ((self.game_speed_scalar - consts::STARTER_GAME_SPEED_SCALAR) * 100000.0) as u64;
+            let mut s = ArrayString::<50>::from("Score: ").unwrap();
+            let speed =
+                ((self.game_speed_scalar - consts::STARTER_GAME_SPEED_SCALAR) * 100000.0) as u64;
             s.push_str(speed.numtoa_str(10, &mut buf));
             let Ok(_) = Text::new(&s, Point::new(12, 20), style).draw(display) else {
                 panic!("Failed to draw.");
             };
-            let Ok(_) = Text::new("Coins:", Point::new(12, 32), style).draw(display) else {
-                panic!("Failed to draw.");
-            };
+            if self.player_died.is_off() {
+                let Ok(_) = Text::new("You Died, Press K", Point::new(12, 32), style).draw(display)
+                else {
+                    panic!("Failed to draw.");
+                };
+            }
         }
     }
 }
