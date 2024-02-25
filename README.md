@@ -11,7 +11,7 @@ the sister project of Subway Sprigsters has already achieved this!
 Yes, but it doesn't run on the real deal.
 Subway Sprigsters runs on actual hardware, and it's actually playable!
 
-## Controls
+## Gameplay
 
 ![gameplay.gif](./assets/gameplay.gif)
 
