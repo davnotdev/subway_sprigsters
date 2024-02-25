@@ -14,23 +14,23 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 ## Controls
 
 ```
- ____                 __                                          
-/\  _`\              /\ \                                         
-\ \,\L\_\    __  __  \ \ \____   __  __  __     __      __  __    
- \/_\__ \   /\ \/\ \  \ \ '__`\ /\ \/\ \/\ \  /'__`\   /\ \/\ \   
-   /\ \L\ \ \ \ \_\ \  \ \ \L\ \\ \ \_/ \_/ \/\ \L\.\_ \ \ \_\ \  
-   \ `\____\ \ \____/   \ \_,__/ \ \___x___/'\ \__/.\_\ \/`____ \ 
+ ____                 __
+/\  _`\              /\ \
+\ \,\L\_\    __  __  \ \ \____   __  __  __     __      __  __
+ \/_\__ \   /\ \/\ \  \ \ '__`\ /\ \/\ \/\ \  /'__`\   /\ \/\ \
+   /\ \L\ \ \ \ \_\ \  \ \ \L\ \\ \ \_/ \_/ \/\ \L\.\_ \ \ \_\ \
+   \ `\____\ \ \____/   \ \_,__/ \ \___x___/'\ \__/.\_\ \/`____ \
     \/_____/  \/___/     \/___/   \/__//__/   \/__/\/_/  `/___/> \
                                                             /\___/
                                                             \/__/
- ____                                                 __                             
-/\  _`\                      __                      /\ \__                          
-\ \,\L\_\    _____    _ __  /\_\      __       ____  \ \ ,_\     __    _ __    ____  
- \/_\__ \   /\ '__`\ /\`'__\\/\ \   /'_ `\    /',__\  \ \ \/   /'__`\ /\`'__\ /',__\ 
+ ____                                                 __
+/\  _`\                      __                      /\ \__
+\ \,\L\_\    _____    _ __  /\_\      __       ____  \ \ ,_\     __    _ __    ____
+ \/_\__ \   /\ '__`\ /\`'__\\/\ \   /'_ `\    /',__\  \ \ \/   /'__`\ /\`'__\ /',__\
    /\ \L\ \ \ \ \L\ \\ \ \/  \ \ \ /\ \L\ \  /\__, `\  \ \ \_ /\  __/ \ \ \/ /\__, `\
    \ `\____\ \ \ ,__/ \ \_\   \ \_\\ \____ \ \/\____/   \ \__\\ \____\ \ \_\ \/\____/
-    \/_____/  \ \ \/   \/_/    \/_/ \/___L\ \ \/___/     \/__/ \/____/  \/_/  \/___/ 
-               \ \_\                  /\____/                                        
+    \/_____/  \ \ \/   \/_/    \/_/ \/___L\ \ \/___/     \/__/ \/____/  \/_/  \/___/
+               \ \_\                  /\____/
                 \/_/                  \_/__/
 
     /   w   [oooo]   i   \
@@ -52,13 +52,15 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 
 Coming Soon!
 
-### From Local Build
+### From Local PC Build
+
+### From Local Sprig Build
 
 1. Install Rust from [https://rustup.rs](https://rustup.rs)
 
 2. Install Dependencies
 
-``` sh
+```sh
 rustup target add thumbv6m-none-eabi
 cargo install cargo-binutils
 rustup component add llvm-tools-preview
@@ -83,4 +85,3 @@ Then release.
 Now, copy the UF2 file from `target/thumbv6m-none-eabi/release/` into the newly mounted drive.
 Voilà.
 Have fun!
-
