@@ -13,6 +13,8 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 
 ## Controls
 
+![gameplay.gif](./assets/gameplay.gif)
+
 ```
  ____                 __
 /\  _`\              /\ \
@@ -50,7 +52,6 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 
 ### From UF2
 
-Coming Soon!
 Download the UF2 from the [latest release](https://github.com/davnotdev/subway_sprigsters/releases).
 
 From here, hold the bootsel button on your sprig while plugging it into your computer.
@@ -60,6 +61,18 @@ Voilà.
 Have fun!
 
 ### From Local PC Build
+
+1. Install Rust from [https://rustup.rs](https://rustup.rs)
+
+2. Install Dependencies
+
+I believe installing the SDL2 library will do.
+
+3. Play
+
+```sh
+cargo r
+```
 
 ### From Local Sprig Build
 
