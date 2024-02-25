@@ -51,6 +51,13 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 ### From UF2
 
 Coming Soon!
+Download the UF2 from the [latest release](https://github.com/davnotdev/subway_sprigsters/releases).
+
+From here, hold the bootsel button on your sprig while plugging it into your computer.
+Then release.
+Now, copy the UF2 file into the newly mounted drive.
+Voilà.
+Have fun!
 
 ### From Local PC Build
 
