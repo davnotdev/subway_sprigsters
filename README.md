@@ -6,7 +6,7 @@
 This project is the realization of a simple dream --
 3D graphics on Hack Club's [Sprig](https://sprig.hackclub.com/).
 
-But wait, [ROOM](https://sprig.hackclub.com/gallery/ROOM),
+But wait, [ROOM](https://github.com/davnotdev/Room),
 the sister project of Subway Sprigsters has already achieved this!
 Yes, but it doesn't run on the real deal.
 Subway Sprigsters runs on actual hardware, and it's actually playable!
@@ -47,6 +47,8 @@ Subway Sprigsters runs on actual hardware, and it's actually playable!
 ## Playing
 
 ### On the Web
+
+> Warning: the web version runs a little too fast providing a subpar experience
 
 [https://davnotdev.github.io/subway_sprigsters](https://davnotdev.github.io/subway_sprigsters)
 
